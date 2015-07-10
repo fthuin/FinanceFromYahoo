@@ -1,0 +1,16 @@
+# Name of the output
+set output "gnuplot.ps"
+set terminal postscript portrait
+set size 7.5,1.0
+set xlabel "Date"
+set ylabel "Valeur"
+set xdata time
+set timefmt '%Y-%m-%d'
+set format x "%Y-%m-%d'
+# Activate the grid
+set grid
+# This is to separate date
+set xtics format "%d/%m/%Y"
+set xtics "2012-07-10", 6092000, "2015-07-09"
+#plot 'output2' using 1:2:(0.00001) smooth acsplines
+plot 'output2' using 1:2:(0.00001) smooth unique
