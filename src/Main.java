@@ -1,4 +1,5 @@
 import yahoofinance.*;
+import yahoofinance.graphs.*;
 import yahoofinance.histquotes.*;
 import java.math.BigDecimal;
 import java.io.IOException;
@@ -16,7 +17,8 @@ import java.io.FileNotFoundException;
 
 public class Main {
     public static final String symbolsFilename = "src/symbols.txt";
-    public static final String outputFile = "src/output";
+    public static final String historyInfoFile = "tmp/output";
+    public static final String graphInfoFile = "tmp/graphInfo";
 
     private static final String CURRENCY = "Currency : ";
     private static final String DIVIDEND = "Dividend : ";
@@ -29,44 +31,23 @@ public class Main {
 
     private static final Calendar DEFAULT_FROM = Calendar.getInstance();
 
-	public static void main(String[] args) {
-	    List<Stock> stocks = new ArrayList<Stock>();
-	    List<String> symbols = new ArrayList<String>();
-
+    public static void writeInfos() {
 	    try {
 	        BufferedReader br = new BufferedReader(new FileReader(symbolsFilename));
-	        BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
 	        String line = null;
 	        while ( (line = br.readLine())  != null) {
-	            Stock stock = YahooFinance.get(line);
-	            bw.write(stock.toString(), 0, stock.toString().length());
-	            bw.newLine();
-	            bw.write(CURRENCY, 0, CURRENCY.length());
-	            bw.write(stock.getCurrency(), 0, stock.getCurrency().length());
-	            bw.newLine();
-	            bw.write(HISTORY, 0, HISTORY.length());
-	            bw.newLine();
-	            
-	            DEFAULT_FROM.add(Calendar.YEAR, -3);
-                for (HistoricalQuote hq : stock.getHistory(DEFAULT_FROM, Calendar.getInstance(), Interval.DAILY)) {
-	                bw.write(hq.toString(), 0, hq.toString().length());
-	                bw.newLine();
-                }
-                bw.newLine();
-	            //stock.print();
+	            GNUplotGraph graph = new GNUplotGraph(line, 0, 0, 10, Interval.DAILY);
+	            graph.writeGNUplotMacro();
             }
             br.close();
-            bw.close();
-	        /*
-	        BigDecimal price = stock.getQuote().getPrice();
-	        BigDecimal change = stock.getQuote().getChangeInPercent();
-	        BigDecimal peg = stock.getStats().getPeg();
-	        BigDecimal dividend = stock.getDividend().getAnnualYieldPercent();
-            */
         } catch (FileNotFoundException e) {
             System.out.println("FileNotFoundException...");
         } catch (IOException e) {
             System.out.println("IOException...");
         }
+    }
+
+	public static void main(String[] args) {
+	    writeInfos();
 	}
 }
