@@ -325,7 +325,7 @@ public class Stock {
     
     @Override
     public String toString() {
-        return this.symbol + ": " + this.quote.getPrice();
+        return this.getName() + " (" + this.getSymbol() + ") : " + this.getQuote().getPrice();
     }
     
     public void print() {
